@@ -3,6 +3,26 @@
  ---------------------------------------------------------------
 
 
+ ---------------------------------------------------------------
+ --        DROP  
+ ---------------------------------------------------------------
+ 
+DROP TABLE Cars;
+DROP TABLE RacingStablePilote;
+DROP TABLE RaceParticipant;
+DROP TABLE Race;
+DROP TABLE Circuit;
+DROP TABLE Pilote;
+DROP TABLE RacingStable;
+
+DROP SEQUENCE Seq_RacingStable_idRacingStable;
+DROP SEQUENCE Seq_Pilote_idPilote;
+DROP SEQUENCE Seq_Circuit_idCircuit;
+DROP SEQUENCE Seq_Race_idRace;
+DROP SEQUENCE Seq_RaceParticipant_idRaceParticipant;
+DROP SEQUENCE Seq_RacingStablePilote_idRacingStablePilote;
+DROP SEQUENCE Seq_Cars_idCar;
+
 ------------------------------------------------------------
 -- Table: RacingStable
 ------------------------------------------------------------
@@ -12,7 +32,7 @@ CREATE TABLE RacingStable(
 	nationality     VARCHAR2(7) ,
 	dateOfCreation  DATE  NOT NULL  ,
 	CONSTRAINT RacingStable_PK PRIMARY KEY (idRacingStable),
-	CONSTRAINT CHK_TYPE_nationality CHECK (nationality IN ('FRENCH','SPANISH','ITALIAN','ENGLISH','AMERICA','GERMAN'))
+	CONSTRAINT CHK_TYPE_nationality_Racing_Stable CHECK (nationality IN ('FRENCH','SPANISH','ITALIAN','ENGLISH','AMERICA','GERMAN'))
 );
 
 ------------------------------------------------------------
@@ -23,7 +43,7 @@ CREATE TABLE Pilote(
 	name         VARCHAR2 (50) NOT NULL  ,
 	nationality  VARCHAR2(7) ,
 	CONSTRAINT Pilote_PK PRIMARY KEY (idPilote),
-	CONSTRAINT CHK_TYPE_nationality CHECK (nationality IN ('FRENCH','SPANISH','ITALIAN','ENGLISH','AMERICA','GERMAN'))
+	CONSTRAINT CHK_TYPE_nationality_Pilote CHECK (nationality IN ('FRENCH','SPANISH','ITALIAN','ENGLISH','AMERICA','GERMAN'))
 );
 
 ------------------------------------------------------------
@@ -100,10 +120,6 @@ CREATE TABLE Cars(
 	,CONSTRAINT Cars_RacingStablePilote0_FK FOREIGN KEY (idRacingStablePilote) REFERENCES RacingStablePilote(idRacingStablePilote)
 );
 
-
-
-
-
 CREATE SEQUENCE Seq_RacingStable_idRacingStable START WITH 1 INCREMENT BY 1 NOCYCLE;
 CREATE SEQUENCE Seq_Pilote_idPilote START WITH 1 INCREMENT BY 1 NOCYCLE;
 CREATE SEQUENCE Seq_Circuit_idCircuit START WITH 1 INCREMENT BY 1 NOCYCLE;
@@ -120,6 +136,7 @@ CREATE OR REPLACE TRIGGER RacingStable_idRacingStable
 	BEGIN
 		 select Seq_RacingStable_idRacingStable.NEXTVAL INTO :NEW.idRacingStable from DUAL; 
 	END;
+/
 CREATE OR REPLACE TRIGGER Pilote_idPilote
 	BEFORE INSERT ON Pilote 
   FOR EACH ROW 
@@ -127,6 +144,7 @@ CREATE OR REPLACE TRIGGER Pilote_idPilote
 	BEGIN
 		 select Seq_Pilote_idPilote.NEXTVAL INTO :NEW.idPilote from DUAL; 
 	END;
+/
 CREATE OR REPLACE TRIGGER Circuit_idCircuit
 	BEFORE INSERT ON Circuit 
   FOR EACH ROW 
@@ -134,6 +152,7 @@ CREATE OR REPLACE TRIGGER Circuit_idCircuit
 	BEGIN
 		 select Seq_Circuit_idCircuit.NEXTVAL INTO :NEW.idCircuit from DUAL; 
 	END;
+/
 CREATE OR REPLACE TRIGGER Race_idRace
 	BEFORE INSERT ON Race 
   FOR EACH ROW 
@@ -141,6 +160,7 @@ CREATE OR REPLACE TRIGGER Race_idRace
 	BEGIN
 		 select Seq_Race_idRace.NEXTVAL INTO :NEW.idRace from DUAL; 
 	END;
+/    
 CREATE OR REPLACE TRIGGER RaceParticipant_idRaceParticipant
 	BEFORE INSERT ON RaceParticipant 
   FOR EACH ROW 
@@ -148,6 +168,7 @@ CREATE OR REPLACE TRIGGER RaceParticipant_idRaceParticipant
 	BEGIN
 		 select Seq_RaceParticipant_idRaceParticipant.NEXTVAL INTO :NEW.idRaceParticipant from DUAL; 
 	END;
+/    
 CREATE OR REPLACE TRIGGER RacingStablePilote_idRacingStablePilote
 	BEFORE INSERT ON RacingStablePilote 
   FOR EACH ROW 
@@ -155,6 +176,7 @@ CREATE OR REPLACE TRIGGER RacingStablePilote_idRacingStablePilote
 	BEGIN
 		 select Seq_RacingStablePilote_idRacingStablePilote.NEXTVAL INTO :NEW.idRacingStablePilote from DUAL; 
 	END;
+/    
 CREATE OR REPLACE TRIGGER Cars_idCar
 	BEFORE INSERT ON Cars 
   FOR EACH ROW 
@@ -162,4 +184,7 @@ CREATE OR REPLACE TRIGGER Cars_idCar
 	BEGIN
 		 select Seq_Cars_idCar.NEXTVAL INTO :NEW.idCar from DUAL; 
 	END;
+
+
+	
 
