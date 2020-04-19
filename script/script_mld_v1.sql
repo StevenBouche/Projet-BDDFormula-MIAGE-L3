@@ -1,112 +1,169 @@
-#------------------------------------------------------------
-#        Script MySQL.
-#------------------------------------------------------------
+ ---------------------------------------------------------------
+ --        Script Oracle.  
+ ---------------------------------------------------------------
 
 
-#------------------------------------------------------------
-# Table: RacingStable
-#------------------------------------------------------------
-
+------------------------------------------------------------
+-- Table: RacingStable
+------------------------------------------------------------
 CREATE TABLE RacingStable(
-        id Int  Auto_increment  NOT NULL
-	,CONSTRAINT RacingStable_PK PRIMARY KEY (id)
-)ENGINE=InnoDB;
+	id  NUMBER NOT NULL ,
+	CONSTRAINT RacingStable_PK PRIMARY KEY (id)
+);
 
-
-#------------------------------------------------------------
-# Table: Pilote
-#------------------------------------------------------------
-
+------------------------------------------------------------
+-- Table: Pilote
+------------------------------------------------------------
 CREATE TABLE Pilote(
-        id Int  Auto_increment  NOT NULL
-	,CONSTRAINT Pilote_PK PRIMARY KEY (id)
-)ENGINE=InnoDB;
+	id  NUMBER NOT NULL ,
+	CONSTRAINT Pilote_PK PRIMARY KEY (id)
+);
 
-
-#------------------------------------------------------------
-# Table: Circuit
-#------------------------------------------------------------
-
+------------------------------------------------------------
+-- Table: Circuit
+------------------------------------------------------------
 CREATE TABLE Circuit(
-        id Int  Auto_increment  NOT NULL
-	,CONSTRAINT Circuit_PK PRIMARY KEY (id)
-)ENGINE=InnoDB;
+	id  NUMBER NOT NULL ,
+	CONSTRAINT Circuit_PK PRIMARY KEY (id)
+);
 
-
-#------------------------------------------------------------
-# Table: Race
-#------------------------------------------------------------
-
+------------------------------------------------------------
+-- Table: Race
+------------------------------------------------------------
 CREATE TABLE Race(
-        id         Int  Auto_increment  NOT NULL ,
-        dateRace   Date NOT NULL ,
-        id_Circuit Int NOT NULL
-	,CONSTRAINT Race_PK PRIMARY KEY (id)
+	id          NUMBER NOT NULL ,
+	dateRace    DATE  NOT NULL  ,
+	id_Circuit  NUMBER(10,0)  NOT NULL  ,
+	CONSTRAINT Race_PK PRIMARY KEY (id)
 
 	,CONSTRAINT Race_Circuit_FK FOREIGN KEY (id_Circuit) REFERENCES Circuit(id)
-)ENGINE=InnoDB;
+);
 
-
-#------------------------------------------------------------
-# Table: RacingStablePilote
-#------------------------------------------------------------
-
+------------------------------------------------------------
+-- Table: RacingStablePilote
+------------------------------------------------------------
 CREATE TABLE RacingStablePilote(
-        id                 Int  Auto_increment  NOT NULL ,
-        startContratPilote Date NOT NULL ,
-        endContratPilote   Date NOT NULL ,
-        id_RacingStable    Int NOT NULL ,
-        id_Pilote          Int NOT NULL
-	,CONSTRAINT RacingStablePilote_PK PRIMARY KEY (id)
+	id                  NUMBER NOT NULL ,
+	startContratPilote  DATE  NOT NULL  ,
+	endContratPilote    DATE  NOT NULL  ,
+	id_RacingStable     NUMBER(10,0)  NOT NULL  ,
+	id_Pilote           NUMBER(10,0)  NOT NULL  ,
+	CONSTRAINT RacingStablePilote_PK PRIMARY KEY (id)
 
 	,CONSTRAINT RacingStablePilote_RacingStable_FK FOREIGN KEY (id_RacingStable) REFERENCES RacingStable(id)
 	,CONSTRAINT RacingStablePilote_Pilote0_FK FOREIGN KEY (id_Pilote) REFERENCES Pilote(id)
-)ENGINE=InnoDB;
+);
 
-
-#------------------------------------------------------------
-# Table: Cars
-#------------------------------------------------------------
-
+------------------------------------------------------------
+-- Table: Cars
+------------------------------------------------------------
 CREATE TABLE Cars(
-        id                    Int  Auto_increment  NOT NULL ,
-        state                 Enum ("AVAILABLE","MAINTENANCE","CRASHED") NOT NULL ,
-        id_RacingStable       Int NOT NULL ,
-        id_RacingStablePilote Int NOT NULL
-	,CONSTRAINT Cars_PK PRIMARY KEY (id)
+	id                     NUMBER NOT NULL ,
+	state                  VARCHAR2(11) ,
+	id_RacingStable        NUMBER(10,0)  NOT NULL  ,
+	id_RacingStablePilote  NUMBER(10,0)  NOT NULL  ,
+	CONSTRAINT Cars_PK PRIMARY KEY (id),
+	CONSTRAINT CHK_TYPE_state CHECK (state IN ('AVAILABLE','MAINTENANCE','CRASHED'))
 
 	,CONSTRAINT Cars_RacingStable_FK FOREIGN KEY (id_RacingStable) REFERENCES RacingStable(id)
 	,CONSTRAINT Cars_RacingStablePilote0_FK FOREIGN KEY (id_RacingStablePilote) REFERENCES RacingStablePilote(id)
-)ENGINE=InnoDB;
+);
 
-
-#------------------------------------------------------------
-# Table: TeamRacingStable
-#------------------------------------------------------------
-
+------------------------------------------------------------
+-- Table: TeamRacingStable
+------------------------------------------------------------
 CREATE TABLE TeamRacingStable(
-        id             Int  Auto_increment  NOT NULL ,
-        idRacingStable Int NOT NULL ,
-        id_Pilote      Int NOT NULL ,
-        id_2_Pilote    Int NOT NULL
-	,CONSTRAINT TeamRacingStable_AK UNIQUE (idRacingStable)
-	,CONSTRAINT TeamRacingStable_PK PRIMARY KEY (id)
+	id              NUMBER NOT NULL ,
+	idRacingStable  NUMBER(10,0) NOT NULL  ,
+	id_Pilote       NUMBER(10,0)  NOT NULL  ,
+	id_2_Pilote     NUMBER(10,0)  NOT NULL  ,
+	CONSTRAINT TeamRacingStable_PK PRIMARY KEY (id) ,
+	CONSTRAINT TeamRacingStable_AK UNIQUE (idRacingStable)
 
 	,CONSTRAINT TeamRacingStable_Pilote_FK FOREIGN KEY (id_Pilote,id_2_Pilote) REFERENCES Pilote(id,id)
-)ENGINE=InnoDB;
+);
 
-
-#------------------------------------------------------------
-# Table: RaceParticipant
-#------------------------------------------------------------
-
+------------------------------------------------------------
+-- Table: RaceParticipant
+------------------------------------------------------------
 CREATE TABLE RaceParticipant(
-        id                  Int  Auto_increment  NOT NULL ,
-        id_Race             Int ,
-        id_TeamRacingStable Int
-	,CONSTRAINT RaceParticipant_PK PRIMARY KEY (id)
+	id                   NUMBER NOT NULL ,
+	id_Race              NUMBER(10,0)   ,
+	id_TeamRacingStable  NUMBER(10,0)   ,
+	CONSTRAINT RaceParticipant_PK PRIMARY KEY (id)
 
 	,CONSTRAINT RaceParticipant_Race_FK FOREIGN KEY (id_Race) REFERENCES Race(id)
 	,CONSTRAINT RaceParticipant_TeamRacingStable0_FK FOREIGN KEY (id_TeamRacingStable) REFERENCES TeamRacingStable(id)
-)ENGINE=InnoDB;
+);
+
+
+
+
+
+CREATE SEQUENCE Seq_RacingStable_id START WITH 1 INCREMENT BY 1 NOCYCLE;
+CREATE SEQUENCE Seq_Pilote_id START WITH 1 INCREMENT BY 1 NOCYCLE;
+CREATE SEQUENCE Seq_Circuit_id START WITH 1 INCREMENT BY 1 NOCYCLE;
+CREATE SEQUENCE Seq_Race_id START WITH 1 INCREMENT BY 1 NOCYCLE;
+CREATE SEQUENCE Seq_RacingStablePilote_id START WITH 1 INCREMENT BY 1 NOCYCLE;
+CREATE SEQUENCE Seq_Cars_id START WITH 1 INCREMENT BY 1 NOCYCLE;
+CREATE SEQUENCE Seq_TeamRacingStable_id START WITH 1 INCREMENT BY 1 NOCYCLE;
+CREATE SEQUENCE Seq_RaceParticipant_id START WITH 1 INCREMENT BY 1 NOCYCLE;
+
+
+CREATE OR REPLACE TRIGGER RacingStable_id
+	BEFORE INSERT ON RacingStable 
+  FOR EACH ROW 
+	WHEN (NEW.id IS NULL) 
+	BEGIN
+		 select Seq_RacingStable_id.NEXTVAL INTO :NEW.id from DUAL; 
+	END;
+CREATE OR REPLACE TRIGGER Pilote_id
+	BEFORE INSERT ON Pilote 
+  FOR EACH ROW 
+	WHEN (NEW.id IS NULL) 
+	BEGIN
+		 select Seq_Pilote_id.NEXTVAL INTO :NEW.id from DUAL; 
+	END;
+CREATE OR REPLACE TRIGGER Circuit_id
+	BEFORE INSERT ON Circuit 
+  FOR EACH ROW 
+	WHEN (NEW.id IS NULL) 
+	BEGIN
+		 select Seq_Circuit_id.NEXTVAL INTO :NEW.id from DUAL; 
+	END;
+CREATE OR REPLACE TRIGGER Race_id
+	BEFORE INSERT ON Race 
+  FOR EACH ROW 
+	WHEN (NEW.id IS NULL) 
+	BEGIN
+		 select Seq_Race_id.NEXTVAL INTO :NEW.id from DUAL; 
+	END;
+CREATE OR REPLACE TRIGGER RacingStablePilote_id
+	BEFORE INSERT ON RacingStablePilote 
+  FOR EACH ROW 
+	WHEN (NEW.id IS NULL) 
+	BEGIN
+		 select Seq_RacingStablePilote_id.NEXTVAL INTO :NEW.id from DUAL; 
+	END;
+CREATE OR REPLACE TRIGGER Cars_id
+	BEFORE INSERT ON Cars 
+  FOR EACH ROW 
+	WHEN (NEW.id IS NULL) 
+	BEGIN
+		 select Seq_Cars_id.NEXTVAL INTO :NEW.id from DUAL; 
+	END;
+CREATE OR REPLACE TRIGGER TeamRacingStable_id
+	BEFORE INSERT ON TeamRacingStable 
+  FOR EACH ROW 
+	WHEN (NEW.id IS NULL) 
+	BEGIN
+		 select Seq_TeamRacingStable_id.NEXTVAL INTO :NEW.id from DUAL; 
+	END;
+CREATE OR REPLACE TRIGGER RaceParticipant_id
+	BEFORE INSERT ON RaceParticipant 
+  FOR EACH ROW 
+	WHEN (NEW.id IS NULL) 
+	BEGIN
+		 select Seq_RaceParticipant_id.NEXTVAL INTO :NEW.id from DUAL; 
+	END;
 
