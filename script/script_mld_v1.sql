@@ -1,7 +1,12 @@
- ---------------------------------------------------------------
- --        Script Oracle.  
- ---------------------------------------------------------------
 
+DROP TABLE RaceParticipant;
+DROP TABLE TeamRacingStable;
+DROP TABLE Cars;
+DROP TABLE RacingStablePilote;
+DROP TABLE Race;
+DROP TABLE Circuit;
+DROP TABLE Pilote;
+DROP TABLE RacingStable;
 
 ------------------------------------------------------------
 -- Table: RacingStable
@@ -76,16 +81,18 @@ CREATE TABLE TeamRacingStable(
 	id              NUMBER NOT NULL ,
 	idRacingStable  NUMBER(10,0) NOT NULL  ,
 	id_Pilote       NUMBER(10,0)  NOT NULL  ,
-	id_2_Pilote     NUMBER(10,0)  NOT NULL  ,
+	id_Pilote_One   NUMBER(10,0)  NOT NULL  ,
+    id_Pilote_Two   NUMBER(10,0)  NOT NULL  ,
 	CONSTRAINT TeamRacingStable_PK PRIMARY KEY (id) ,
 	CONSTRAINT TeamRacingStable_AK UNIQUE (idRacingStable)
-
-	,CONSTRAINT TeamRacingStable_Pilote_FK FOREIGN KEY (id_Pilote,id_2_Pilote) REFERENCES Pilote(id,id)
+	,CONSTRAINT TeamRacingStable_Pilote_One_FK FOREIGN KEY (id_Pilote_One) REFERENCES Pilote(id)
+    ,CONSTRAINT TeamRacingStable_Pilote_Two_FK FOREIGN KEY (id_Pilote_Two) REFERENCES Pilote(id)
 );
 
 ------------------------------------------------------------
 -- Table: RaceParticipant
 ------------------------------------------------------------
+
 CREATE TABLE RaceParticipant(
 	id                   NUMBER NOT NULL ,
 	id_Race              NUMBER(10,0)   ,
@@ -96,19 +103,22 @@ CREATE TABLE RaceParticipant(
 	,CONSTRAINT RaceParticipant_TeamRacingStable0_FK FOREIGN KEY (id_TeamRacingStable) REFERENCES TeamRacingStable(id)
 );
 
-
-
-
-
+DROP SEQUENCE Seq_RacingStable_id;
 CREATE SEQUENCE Seq_RacingStable_id START WITH 1 INCREMENT BY 1 NOCYCLE;
+DROP SEQUENCE Seq_Pilote_id;
 CREATE SEQUENCE Seq_Pilote_id START WITH 1 INCREMENT BY 1 NOCYCLE;
+DROP SEQUENCE Seq_Circuit_id;
 CREATE SEQUENCE Seq_Circuit_id START WITH 1 INCREMENT BY 1 NOCYCLE;
+DROP SEQUENCE Seq_Race_id;
 CREATE SEQUENCE Seq_Race_id START WITH 1 INCREMENT BY 1 NOCYCLE;
+DROP SEQUENCE Seq_RacingStablePilote_id;
 CREATE SEQUENCE Seq_RacingStablePilote_id START WITH 1 INCREMENT BY 1 NOCYCLE;
+DROP SEQUENCE Seq_Cars_id;
 CREATE SEQUENCE Seq_Cars_id START WITH 1 INCREMENT BY 1 NOCYCLE;
+DROP SEQUENCE Seq_TeamRacingStable_id;
 CREATE SEQUENCE Seq_TeamRacingStable_id START WITH 1 INCREMENT BY 1 NOCYCLE;
+DROP SEQUENCE Seq_RaceParticipant_id;
 CREATE SEQUENCE Seq_RaceParticipant_id START WITH 1 INCREMENT BY 1 NOCYCLE;
-
 
 CREATE OR REPLACE TRIGGER RacingStable_id
 	BEFORE INSERT ON RacingStable 
