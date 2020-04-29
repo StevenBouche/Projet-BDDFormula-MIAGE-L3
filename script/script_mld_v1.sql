@@ -3,13 +3,15 @@
  ---------------------------------------------------------------
 
 DROP TABLE RacingStablePiloteHistory;
-DROP TABLE CarsRacingStable;
+
 DROP TABLE RacingStablePilote;
 DROP TABLE RaceParticipant;
 DROP TABLE Race;
 DROP TABLE Circuit;
 DROP TABLE Pilote;
 DROP TABLE RacingStable;
+DROP TABLE CarsRacingStable;
+DROP TABLE CarRacingStablePilote;
 
 DROP SEQUENCE Seq_RacingStablePiloteHistory_idRacingStablePiloteHistory;
 DROP SEQUENCE Seq_RacingStable_idRacingStable;
@@ -19,15 +21,8 @@ DROP SEQUENCE Seq_Race_idRace;
 DROP SEQUENCE Seq_RaceParticipant_idRaceParticipant;
 DROP SEQUENCE Seq_RacingStablePilote_idRacingStablePilote;
 DROP SEQUENCE Seq_Cars_idCar;
+DROP SEQUENCE Seq_CarRacingStablePilote_idCarRacingStablePilote;
 
---DROP TRIGGER Pilote_idPilote;
---DROP TRIGGER RacingStablePiloteHistory_idRacingStablePiloteHistory;
---DROP TRIGGER CarsRacingStable_idCar;
---DROP TRIGGER RacingStablePilote_idRacingStablePilote;
---DROP TRIGGER RaceParticipant_idRaceParticipant;
---DROP TRIGGER Race_idRace;
---DROP TRIGGER Circuit_idCircuit;
---DROP TRIGGER RacingStable_idRacingStable;
 
 ------------------------------------------------------------
 -- Table: RacingStable
@@ -51,7 +46,7 @@ CREATE TABLE Pilote(
 	dateBirth    DATE  NOT NULL  ,
 	nationality  VARCHAR2(11) ,
 	CONSTRAINT Pilote_PK PRIMARY KEY (idPilote),
-	CONSTRAINT CHK_TYPE_nationality CHECK (nationality IN ('ITALIAN','AMERICA','AUSTRALIA','UK','GERMANY','CANADA','FINLAND','FRANCE','MEXICO','MONACO','DENMARK','THAILAND','RUSSIA','NETHERLANDS','SPAIN','ITALY'))
+	CONSTRAINT CHK_TYPE_nationality CHECK (nationality IN ('POLAND','AMERICA','AUSTRALIA','UK','GERMANY','CANADA','FINLAND','FRANCE','MEXICO','MONACO','DENMARK','THAILAND','RUSSIA','NETHERLANDS','SPAIN','ITALY'));
 );
 
 ------------------------------------------------------------
@@ -85,17 +80,49 @@ CREATE TABLE Race(
 ------------------------------------------------------------
 CREATE TABLE RaceParticipant(
 	idRaceParticipant  NUMBER NOT NULL ,
-	bestTimeQ1         INTERVAL DAY TO SECOND DEFAULT '00 00:00:00.000' NOT NULL ,
-	bestTimeQ2         INTERVAL DAY TO SECOND DEFAULT '00 00:00:00.000' NOT NULL ,
-	bestTimeQ3         INTERVAL DAY TO SECOND DEFAULT '00 00:00:00.000' NOT NULL ,
-	resultTimeRace     INTERVAL DAY TO SECOND DEFAULT '00 00:00:00.000' NOT NULL ,
+	bestTimeQ1         TIMESTAMP DEFAULT    ,
+	bestTimeQ2         TIMESTAMP   ,
+	bestTimeQ3         TIMESTAMP   ,
+	resultTimeRace     TIMESTAMP   ,
+	positionRace       NUMBER(10,0)  NOT NULL  ,
+	difLoop            NUMBER(10,0)  DEFAULT 0  ,	
 	idRace             NUMBER(10,0)  NOT NULL  ,
 	idPilote           NUMBER(10,0)  NOT NULL  ,
+	idRacingStable     NUMBER(10,0)  NOT NULL  ,
 	CONSTRAINT RaceParticipant_PK PRIMARY KEY (idRaceParticipant)
 
 	,CONSTRAINT RaceParticipant_Race_FK FOREIGN KEY (idRace) REFERENCES Race(idRace)
 	,CONSTRAINT RaceParticipant_Pilote0_FK FOREIGN KEY (idPilote) REFERENCES Pilote(idPilote)
-	,CONSTRAINT RaceParticipant_Pilote_AK UNIQUE (idPilote)
+	,CONSTRAINT RaceParticipant_RacingStable1_FK FOREIGN KEY (idRacingStable) REFERENCES RacingStable(idRacingStable)
+	
+);
+
+alter table
+   RaceParticipant
+modify
+(
+   	bestTimeQ1         INTERVAL DAY TO SECOND(3) DEFAULT '00 00:00:00.000',
+	bestTimeQ2         INTERVAL DAY TO SECOND(3) DEFAULT '00 00:00:00.000',
+	bestTimeQ3         INTERVAL DAY TO SECOND(3) DEFAULT '00 00:00:00.000',
+	resultTimeRace     INTERVAL DAY TO SECOND(3) DEFAULT '00 00:00:00.000',
+	positionRace       NUMBER(10,0)  NOT NULL  ,
+	difLoop            NUMBER(10,0)  DEFAULT 0  	
+);
+
+INTERVAL DAY TO SECOND(3) DEFAULT '00 00:00:00.000'
+
+------------------------------------------------------------
+-- Table: CarsRacingStable
+------------------------------------------------------------
+CREATE TABLE CarsRacingStable(
+	idCar           NUMBER NOT NULL ,
+	name            VARCHAR2 (50) NOT NULL  ,
+	state           VARCHAR2(11) ,
+	idRacingStable  NUMBER(10,0)  NOT NULL  ,
+	CONSTRAINT CarsRacingStable_PK PRIMARY KEY (idCar),
+	CONSTRAINT CHK_TYPE_state CHECK (state IN ('AVAILABLE','MAINTENANCE','CRASHED'))
+
+	,CONSTRAINT CarsRacingStable_RacingStable_FK FOREIGN KEY (idRacingStable) REFERENCES RacingStable(idRacingStable)
 );
 
 ------------------------------------------------------------
@@ -114,22 +141,6 @@ CREATE TABLE RacingStablePilote(
 );
 
 ------------------------------------------------------------
--- Table: Cars
-------------------------------------------------------------
-CREATE TABLE CarsRacingStable(
-	idCar                 NUMBER NOT NULL ,
-	name                  VARCHAR2 (50) NOT NULL  ,
-	state                 VARCHAR2(11) ,
-	idRacingStable        NUMBER(10,0)  NOT NULL  ,
-	idRacingStablePilote  NUMBER(10,0)  NOT NULL  ,
-	CONSTRAINT Cars_PK PRIMARY KEY (idCar),
-	CONSTRAINT CHK_TYPE_state CHECK (state IN ('AVAILABLE','MAINTENANCE','CRASHED'))
-
-	,CONSTRAINT Cars_RacingStable_FK FOREIGN KEY (idRacingStable) REFERENCES RacingStable(idRacingStable)
-	,CONSTRAINT Cars_RacingStablePilote0_FK FOREIGN KEY (idRacingStablePilote) REFERENCES RacingStablePilote(idRacingStablePilote)
-);
-
-------------------------------------------------------------
 -- Table: RacingStablePiloteHistory
 ------------------------------------------------------------
 CREATE TABLE RacingStablePiloteHistory(
@@ -144,6 +155,21 @@ CREATE TABLE RacingStablePiloteHistory(
 	,CONSTRAINT RacingStablePiloteHistory_Pilote0_FK FOREIGN KEY (idPilote) REFERENCES Pilote(idPilote)
 );
 
+------------------------------------------------------------
+-- Table: CarRacingStablePilote
+------------------------------------------------------------
+CREATE TABLE CarRacingStablePilote(
+	idCarRacingStablePilote  NUMBER NOT NULL ,
+	idCar                    NUMBER(10,0)  NOT NULL  ,
+	idRacingStablePilote     NUMBER(10,0)  NOT NULL  ,
+	CONSTRAINT CarRacingStablePilote_PK PRIMARY KEY (idCarRacingStablePilote)
+
+	,CONSTRAINT CarRacingStablePilote_CarsRacingStable_FK FOREIGN KEY (idCar) REFERENCES CarsRacingStable(idCar)
+	,CONSTRAINT CarRacingStablePilote_RacingStablePilote0_FK FOREIGN KEY (idRacingStablePilote) REFERENCES RacingStablePilote(idRacingStablePilote)
+	,CONSTRAINT CarRacingStablePilote_CarsRacingStable_AK UNIQUE (idCar)
+	,CONSTRAINT CarRacingStablePilote_RacingStablePilote0_AK UNIQUE (idRacingStablePilote)
+);
+
 CREATE SEQUENCE Seq_RacingStable_idRacingStable START WITH 1 INCREMENT BY 1 NOCYCLE;
 CREATE SEQUENCE Seq_Pilote_idPilote START WITH 1 INCREMENT BY 1 NOCYCLE;
 CREATE SEQUENCE Seq_Circuit_idCircuit START WITH 1 INCREMENT BY 1 NOCYCLE;
@@ -152,6 +178,7 @@ CREATE SEQUENCE Seq_RaceParticipant_idRaceParticipant START WITH 1 INCREMENT BY 
 CREATE SEQUENCE Seq_RacingStablePilote_idRacingStablePilote START WITH 1 INCREMENT BY 1 NOCYCLE;
 CREATE SEQUENCE Seq_Cars_idCar START WITH 1 INCREMENT BY 1 NOCYCLE;
 CREATE SEQUENCE Seq_RacingStablePiloteHistory_idRacingStablePiloteHistory START WITH 1 INCREMENT BY 1 NOCYCLE;
+CREATE SEQUENCE Seq_CarRacingStablePilote_idCarRacingStablePilote START WITH 1 INCREMENT BY 1 NOCYCLE;
 
 CREATE OR REPLACE TRIGGER RacingStable_idRacingStable
 	BEFORE INSERT ON RacingStable 
@@ -217,3 +244,168 @@ CREATE OR REPLACE TRIGGER RacingStablePiloteHistory_idRacingStablePiloteHistory
 		 select Seq_RacingStablePiloteHistory_idRacingStablePiloteHistory.NEXTVAL INTO :NEW.idRacingStablePiloteHistory from DUAL; 
 	END;
 /
+CREATE OR REPLACE TRIGGER CarRacingStablePilote_idCarRacingStablePilote
+	BEFORE INSERT ON CarRacingStablePilote 
+  FOR EACH ROW 
+	WHEN (NEW.idCarRacingStablePilote IS NULL) 
+	BEGIN
+		 select Seq_CarRacingStablePilote_idCarRacingStablePilote.NEXTVAL INTO :NEW.idCarRacingStablePilote from DUAL; 
+	END;
+/
+create or replace TRIGGER PILOTE_BEFORE_DELETE 
+BEFORE DELETE ON PILOTE FOR EACH ROW
+DECLARE
+    number_race_pilote NUMBER;
+    have_race EXCEPTION;
+    PRAGMA EXCEPTION_INIT(have_race,-20001);
+BEGIN
+
+    SELECT COUNT(*) INTO number_race_pilote 
+    FROM raceparticipant 
+    WHERE raceparticipant.idpilote = :old.idpilote;
+    
+    IF number_race_pilote > 0 THEN
+        RAISE_APPLICATION_ERROR(-20001, 'Pilote referenced in race participant.');
+    END IF;
+    
+    DELETE FROM racingstablepilotehistory rsph WHERE rsph.idPilote = :old.idpilote;
+    DELETE FROM racingstablepilote rsp WHERE rsp.idPilote = :old.idpilote;
+    
+    EXCEPTION
+        WHEN have_race THEN
+            DBMS_OUTPUT.PUT_LINE('Pilote referenced in race participant.');
+            
+END;
+/
+CREATE OR REPLACE TRIGGER RACINGSTABLE_BEFORE_DELETE 
+BEFORE DELETE ON racingstable FOR EACH ROW
+DECLARE
+    nb_have_participate_race NUMBER;
+    have_race EXCEPTION;
+    PRAGMA EXCEPTION_INIT(have_race,-20001);
+BEGIN
+   
+   SELECT COUNT(*) INTO nb_have_participate_race FROM raceparticipant rp WHERE rp.idRacingStable = :old.idRacingStable;
+   
+   IF nb_have_participate_race > 0 THEN
+        RAISE_APPLICATION_ERROR(-20001, 'Racing Stable have pilote referenced in race participant');
+   END IF;
+   
+    DELETE FROM racingstablepilotehistory rsph WHERE rsph.idRacingStable = :old.idRacingStable;
+    DELETE FROM racingstablepilote rsp WHERE rsp.idRacingStable = :old.idRacingStable;
+    DELETE FROM carsracingstable crs WHERE crs.idRacingStable = :old.idRacingStable;
+    
+    EXCEPTION
+        WHEN have_race THEN
+            DBMS_OUTPUT.PUT_LINE('Racing Stable have pilote referenced in race participant');
+            
+            
+END;
+/
+CREATE OR REPLACE TRIGGER RACINGSTABLEPILOTE_BEFORE_INSERT 
+BEFORE INSERT ON racingstablePilote FOR EACH ROW 
+DECLARE
+    nb_car_rs NUMBER;
+    nb_pilote_stable NUMBER;
+    
+BEGIN
+  
+  /*
+    SELECT * 
+    FROM racingstablePilote rsp 
+    LEFT OUTER JOIN carsracingstable ON rsp.idracingstable = carsracingstable.idracingstable
+    WHERE rsp.idracingstable = :new.idracingstable;
+  */
+  
+  SELECT COUNT(*) INTO nb_car_rs 
+  FROM carsracingstable 
+  WHERE carsracingstable.idRacingStable = :new.idracingstable
+  AND carsracingstable.idRacingStablePilote IS NOT NULL;
+  
+  SELECT COUNT(*) INTO nb_pilote_stable 
+  FROM racingstablePilote 
+  WHERE racingstablePilote.idRacingStable = :new.idracingstable;
+  
+  IF nb_car_rs = 2 THEN 
+    RAISE_APPLICATION_ERROR(-20000, 'RACING STABLE CAR HAVE NOT CARS.');
+  ELSIF nb_pilote_stable  = 2 THEN
+    RAISE_APPLICATION_ERROR(-20001, 'RACING STABLE HAVE ALREADY 2 PILOTE.');
+  END IF;
+  
+END;
+/
+CREATE OR REPLACE TRIGGER RACINGSTABLEPILOTE_BEFORE_INSERT 
+BEFORE INSERT ON racingstablePilote FOR EACH ROW 
+DECLARE
+    nb_car_rs NUMBER;
+    nb_pilote_stable NUMBER;
+    
+BEGIN
+  
+  /*
+    SELECT * 
+    FROM racingstablePilote rsp 
+    LEFT OUTER JOIN carsracingstable ON rsp.idracingstable = carsracingstable.idracingstable
+    WHERE rsp.idracingstable = :new.idracingstable;
+  */
+  
+  SELECT COUNT(*) INTO nb_car_rs 
+  FROM carsracingstable 
+  WHERE carsracingstable.idRacingStable = :new.idracingstable
+  AND carsracingstable.idRacingStablePilote IS NOT NULL;
+  
+  SELECT COUNT(*) INTO nb_pilote_stable 
+  FROM racingstablePilote 
+  WHERE racingstablePilote.idRacingStable = :new.idracingstable;
+  
+  IF nb_car_rs = 2 THEN 
+    RAISE_APPLICATION_ERROR(-20000, 'RACING STABLE CAR HAVE NOT CARS.');
+  ELSIF nb_pilote_stable  = 2 THEN
+    RAISE_APPLICATION_ERROR(-20001, 'RACING STABLE HAVE ALREADY 2 PILOTE.');
+  END IF;
+  
+END;
+
+
+
+
+
+
+
+
+
+create or replace TRIGGER RACINGSTABLEPILOTE_BEFORE_INSERT 
+BEFORE INSERT ON racingstablePilote FOR EACH ROW
+DECLARE
+    nb_car_rs NUMBER;
+    nb_pilote_stable NUMBER;
+    have_race EXCEPTION;
+    PRAGMA EXCEPTION_INIT(have_race,-20001);
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('hello');
+  SELECT COUNT(*) INTO nb_pilote_stable 
+  FROM racingstablePilote 
+  WHERE racingstablePilote.idRacingStable = :new.idracingstable;
+
+  IF nb_pilote_stable  = 2 THEN
+    RAISE_APPLICATION_ERROR(-20001, 'RACING STABLE HAVE ALREADY 2 PILOTE.');
+  END IF;
+  
+  :new.datehavejoin := sysdate;
+  
+    EXCEPTION
+        WHEN have_race THEN
+            DBMS_OUTPUT.PUT_LINE('RACING STABLE HAVE ALREADY 2 PILOTE.');
+            
+END;
+
+
+
+
+
+
+
+
+
+
+
