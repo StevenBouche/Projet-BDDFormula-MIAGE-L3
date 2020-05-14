@@ -1,0 +1,230 @@
+Dictionnaire de données 
+
+Nom : state
+Code : STATE
+Type : STATE_CAR
+Taille : ,
+Commentaire : 
+
+Nom : hadJoined
+Code : HADJOINED
+Type : DATE
+Taille : ,
+Commentaire : 
+
+Nom : hadLeft
+Code : HADLEFT
+Type : DATE
+Taille : ,
+Commentaire : 
+
+Nom : name
+Code : NAME
+Type : VARCHAR
+Taille : 50,
+Commentaire : 
+
+Nom : dateStartRace
+Code : DATESTARTRACE
+Type : DATE
+Taille : ,
+Commentaire : 
+
+Nom : idPiloteTwo
+Code : IDPILOTETWO
+Type : INT
+Taille : ,
+Commentaire : 
+
+Nom : idPiloteOne
+Code : IDPILOTEONE
+Type : INT
+Taille : ,
+Commentaire : 
+
+Nom : idRacingStable
+Code : IDRACINGSTABLE
+Type : INT
+Taille : ,
+Commentaire : 
+
+Nom : idCar
+Code : IDCAR
+Type : AUTO_INCREMENT
+Taille : ,
+Commentaire : 
+
+Nom : idRacingStable
+Code : IDRACINGSTABLE
+Type : AUTO_INCREMENT
+Taille : ,
+Commentaire : 
+
+Nom : idRacingStablePilote
+Code : IDRACINGSTABLEPILOTE
+Type : AUTO_INCREMENT
+Taille : ,
+Commentaire : 
+
+Nom : idPilote
+Code : IDPILOTE
+Type : AUTO_INCREMENT
+Taille : ,
+Commentaire : 
+
+Nom : idRaceParticipant
+Code : IDRACEPARTICIPANT
+Type : AUTO_INCREMENT
+Taille : ,
+Commentaire : 
+
+Nom : idRace
+Code : IDRACE
+Type : AUTO_INCREMENT
+Taille : ,
+Commentaire : 
+
+Nom : idCircuit
+Code : IDCIRCUIT
+Type : AUTO_INCREMENT
+Taille : ,
+Commentaire : 
+
+Nom : resultRace
+Code : RESULTRACE
+Type : INT
+Taille : ,
+Commentaire : 
+
+Nom : nationality
+Code : NATIONALITY
+Type : NATIONALITY
+Taille : ,
+Commentaire : 
+
+Nom :  mileage
+Code : MILEAGE
+Type : FLOAT
+Taille : ,
+Commentaire : 
+
+Nom : resultTimeRace
+Code : TIMERACE
+Type : TIME
+Taille : ,
+Commentaire : 
+
+Nom : bestTimeQ1
+Code : BESTTIMEQ1
+Type : TIME
+Taille : ,
+Commentaire : 
+
+Nom : bestTimeQ2
+Code : BESTTIMEQ2
+Type : TIME
+Taille : ,
+Commentaire : 
+
+Nom : bestTimeQ3
+Code : BESTTIMEQ3
+Type : TIME
+Taille : ,
+Commentaire : 
+
+Nom : country
+Code : COUNTRY
+Type : VARCHAR
+Taille : 50,
+Commentaire : 
+
+Nom : idRacingStablePiloteHistory
+Code : IDRACINGSTABLEPILOTEHISTORY
+Type : AUTO_INCREMENT
+Taille : ,
+Commentaire : 
+
+Nom : dateEndRace
+Code : DATEENDRACE
+Type : DATE
+Taille : ,
+Commentaire : 
+
+Nom : loopRace
+Code : LOOPRACE
+Type : INT
+Taille : ,
+Commentaire : 
+
+Nom : constructor
+Code : CONSTRUCTOR
+Type : VARCHAR
+Taille : 50,
+Commentaire : 
+
+Nom : age
+Code : AGE
+Type : INT
+Taille : ,
+Commentaire : 
+
+Nom : dateHaveJoin
+Code : DATEHAVEJOIN
+Type : DATE
+Taille : ,
+Commentaire : 
+
+Nom : dateOfCreation
+Code : DATEOFCREATION
+Type : DATE
+Taille : ,
+Commentaire : 
+
+Nom : dateBirth
+Code : DATEBIRTH
+Type : DATE
+Taille : ,
+Commentaire : 
+
+Nom : nbCarsAvailable
+Code : NBCARSAVAILABLE
+Type : INT
+Taille : ,
+Commentaire : 
+
+Nom : idNationality
+Code : IDNATIONALITY
+Type : AUTO_INCREMENT
+Taille : ,
+Commentaire : 
+
+Nom : nbPiloteHaveNationality
+Code : NBPILOTEHAVENATIONALITY
+Type : INT
+Taille : ,
+Commentaire : 
+
+Nom : timeInRace
+Code : TIMEINRACE
+Type : TIME
+Taille : ,
+Commentaire : 
+
+Nom : positionRace
+Code : POSITIONRACE
+Type : INT
+Taille : ,
+Commentaire : 
+
+Nom : difLoop
+Code : DIFLOOP
+Type : INT
+Taille : ,
+Commentaire : 
+
+Nom : idCarRacingStablePilote
+Code : IDCARRACINGSTABLEPILOTE
+Type : AUTO_INCREMENT
+Taille : ,
+Commentaire : 
+

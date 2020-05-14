@@ -295,12 +295,12 @@ DECLARE
     PRAGMA EXCEPTION_INIT(weekend,-20002);
 BEGIN
 
- /* IF to_char(SYSDATE,'DY') in ('VEN.','SAM.','DIM.') THEN
+  IF to_char(SYSDATE,'DY') in ('VEN.','SAM.','DIM.') THEN
     RAISE_APPLICATION_ERROR(-20002, 'CANNOT REMOVE PLAYER OF RACING STABLE WEEK END'|| to_char(SYSDATE,'DY'));
-  END IF;*/
+  END IF;
   
     DELETE FROM carracingstablepilote crsp WHERE crsp.idRacingStablePilote = :old.idRacingStablePilote;
-  --INSERT INTO racingstablepilotehistory (hadJoined, hadLeft, idRacingStable, IdPilote) VALUES (:old.dateHaveJoin, SYSDATE, :old.idRacingStable, :old.idPilote);
+  INSERT INTO racingstablepilotehistory (hadJoined, hadLeft, idRacingStable, IdPilote) VALUES (:old.dateHaveJoin, SYSDATE, :old.idRacingStable, :old.idPilote);
   
   
    EXCEPTION
