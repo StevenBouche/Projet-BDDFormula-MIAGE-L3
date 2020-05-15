@@ -1,4 +1,4 @@
- --
+SET SERVEROUTPUT ON;
 
 /*
 *	Description textuelle des requêtes de suppression 
@@ -57,6 +57,7 @@ WHERE idPilote IN (SELECT pilote.idpilote
     WHERE racingstablepilote.idPilote IS NULL
     AND racingstablepilotehistory.idPilote IS NULL);
 
+
 --	Supprimer toutes les écuries qui n’ont pas de pilote et qui n’en ont jamais eu
 
 
@@ -69,6 +70,7 @@ WHERE idRacingStable IN (SELECT racingstable.idRacingStable
     WHERE racingstablepilote.idRacingStable IS NULL
     AND racingstablepilotehistory.idRacingStable IS NULL);
 
+ROLLBACK;
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -83,12 +85,12 @@ WHERE idRacingStable IN (SELECT racingstable.idRacingStable
 UPDATE carsracingstable
 SET state = 'AVAILABLE'
 WHERE idCar = 22;
-
+ROLLBACK;
 
 UPDATE racingstable
 SET constructor = 'FERRARI'
 WHERE idRacingstable = 11;
-
+ROLLBACK;
 
 -- 2 requêtes impliquant 2 tables 
 
@@ -144,6 +146,8 @@ WHERE carsracingstable.idCar IN (
     WHERE raceparticipant.idrace = 2
     AND extract(day from (raceparticipant.resulttimerace)*86400) = 0
 );
+
+ROLLBACK;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

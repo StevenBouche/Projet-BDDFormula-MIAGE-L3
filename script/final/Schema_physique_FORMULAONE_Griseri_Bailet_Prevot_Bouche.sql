@@ -1,17 +1,12 @@
----------------------------------------------------------------
- --        Script Oracle.  
- ---------------------------------------------------------------
-
+DROP TABLE CarRacingStablePilote;
 DROP TABLE RacingStablePiloteHistory;
-
 DROP TABLE RacingStablePilote;
+DROP TABLE CarsRacingStable;
 DROP TABLE RaceParticipant;
 DROP TABLE Race;
 DROP TABLE Circuit;
-DROP TABLE Pilote;
 DROP TABLE RacingStable;
-DROP TABLE CarsRacingStable;
-DROP TABLE CarRacingStablePilote;
+DROP TABLE Pilote;
 
 DROP SEQUENCE Seq_RacingStablePiloteHistory_idRacingStablePiloteHistory;
 DROP SEQUENCE Seq_RacingStable_idRacingStable;
@@ -22,6 +17,7 @@ DROP SEQUENCE Seq_RaceParticipant_idRaceParticipant;
 DROP SEQUENCE Seq_RacingStablePilote_idRacingStablePilote;
 DROP SEQUENCE Seq_Cars_idCar;
 DROP SEQUENCE Seq_CarRacingStablePilote_idCarRacingStablePilote;
+
 
 
 ------------------------------------------------------------
@@ -46,7 +42,7 @@ CREATE TABLE Pilote(
 	dateBirth    DATE  NOT NULL  ,
 	nationality  VARCHAR2(11) ,
 	CONSTRAINT Pilote_PK PRIMARY KEY (idPilote),
-	CONSTRAINT CHK_TYPE_nationality CHECK (nationality IN ('POLAND','AMERICA','AUSTRALIA','UK','GERMANY','CANADA','FINLAND','FRANCE','MEXICO','MONACO','DENMARK','THAILAND','RUSSIA','NETHERLANDS','SPAIN','ITALY'));
+	CONSTRAINT CHK_TYPE_nationality CHECK (nationality IN ('POLAND','AMERICA','AUSTRALIA','UK','GERMANY','CANADA','FINLAND','FRANCE','MEXICO','MONACO','DENMARK','THAILAND','RUSSIA','NETHERLANDS','SPAIN','ITALY'))
 );
 
 ------------------------------------------------------------
@@ -238,3 +234,4 @@ CREATE OR REPLACE TRIGGER CarRacingStablePilote_idCarRacingStablePilote
 		 select Seq_CarRacingStablePilote_idCarRacingStablePilote.NEXTVAL INTO :NEW.idCarRacingStablePilote from DUAL; 
 	END;
 /
+COMMIT;
